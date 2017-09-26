@@ -157,7 +157,7 @@ def perceptron_illustrate(perceptron_type='default', min_distance=0.5, point_cou
                          fargs=(len(perceptron_line_hist) - 1, perceptron_line_hist),
                          repeat=True, repeat_delay=3000, blit=True, interval=500)
 
-    anim.save('%s_perceptron.gif' % (perceptron_type,), dpi=80, writer='imagemagick')
+    anim.save('./illustrators/%s_perceptron.gif' % (perceptron_type,), dpi=80, writer='imagemagick')
     plt.show()
 
 

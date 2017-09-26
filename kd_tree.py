@@ -103,7 +103,7 @@ def illustrate_build_kd_tree():
     draw_static_elements()
     anim = FuncAnimation(fig, animate, frames=len(square_list), init_func=init,
                          interval=1000, blit=True, repeat=True, repeat_delay=5000)
-    anim.save('build_kd_tree.gif', dpi=80, writer='imagemagick')
+    anim.save('./illustrators/build_kd_tree.gif', dpi=80, writer='imagemagick')
     plt.show()
 
 
@@ -293,7 +293,7 @@ def illustrate_search_kd_tree(k):
 
     anim = FuncAnimation(fig, animate, frames=len(search_track), init_func=init,
                          interval=1000, blit=True, repeat=True, repeat_delay=5000)
-    anim.save('%dNN_search_kd_tree.gif' % k, dpi=80, writer='imagemagick')
+    anim.save('./illustrators/%dNN_search_kd_tree.gif' % k, dpi=80, writer='imagemagick')
     plt.show()
 
 
