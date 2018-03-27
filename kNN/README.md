@@ -44,7 +44,10 @@ demo.py包含了测试方法：
 
     predict label is in small doses
 
+    ![predict_dating_person](https://github.com/richardxdh/ml_algorithms/blob/master/kNN/imgs/predict_dating_person.png)
+
 4. classifyDigit
 
-    根据trainingdigits中的数据构建kd树，对testdigits下的数据进行分类
+    根据trainingDigits中的数据构建kd树，对testDigits下的数据进行分类
 
+(trainingDigits和testdigits在Digits.zip中)
