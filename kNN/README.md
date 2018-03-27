@@ -7,7 +7,7 @@ k近邻算法根据样本数据中距离测试数据最近的k个实例，对测
 
 关于距离度量的方法可以看[这里](https://my.oschina.net/hunglish/blog/787596)或[这里](https://blog.csdn.net/guoziqing506/article/details/51779536)
 
-关于kNN的算法原理可以看[磊磊落落的博客](https://leileiluoluo.com/posts/kdtree-algorithm-and-implementation.html)
+关于kNN的算法原理可以看[这里](https://leileiluoluo.com/posts/kdtree-algorithm-and-implementation.html)
 
 #### 为了提高kNN算法的性能，需要对数据进行结构化处理；比较常见的有kd树，它分为三个部分：
 1. 构建KD树；（knn.py中的buildKDTree）
