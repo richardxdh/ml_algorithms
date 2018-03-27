@@ -50,4 +50,4 @@ demo.py包含了测试方法：
 
     根据trainingDigits中的数据构建kd树，对testDigits下的数据进行分类
 
-(trainingDigits和testdigits在Digits.zip中)
+    (trainingDigits和testdigits在Digits.zip中)

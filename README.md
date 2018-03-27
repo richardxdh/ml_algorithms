@@ -17,5 +17,5 @@
 
     实现kNN算法，包含了测试数据和程序   
 
-    [详情](https://github.com/richardxdh/ml_algorithms/blob/master/kNN/README.md)
+[详情](https://github.com/richardxdh/ml_algorithms/blob/master/kNN/README.md)
 
