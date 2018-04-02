@@ -20,11 +20,11 @@
 
 在划分数据前后信息的变化叫做信息增益；即经验熵与经验条件熵之差；
 
-<center><font size=5 color=aaaaaa>g(D,A) = H(D) - H(D|A)</font></center> 
+<center><a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\small&space;g(D,A)&space;=&space;H(D)&space;-&space;H(D|A)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\inline&space;\small&space;g(D,A)&space;=&space;H(D)&space;-&space;H(D|A)" title="\small g(D,A) = H(D) - H(D|A)" /></a></center>
 
 ### 信息增益比
 
-以信息增益作为划分训练数据集的特征，存在偏向于选择取值较多的特征的问题，使用信息增益比可以对这一问题进行校正；特征A对训练数据集D的信息增益比$g_R(D,A)$定义为其信息增益g(D,A)与训练数据集D关于特征A的值的熵$H_A(D)$之比，即
+以信息增益作为划分训练数据集的特征，存在偏向于选择取值较多的特征的问题，使用信息增益比可以对这一问题进行校正；特征A对训练数据集D的信息增益比<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\small&space;g_R(D,A)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\inline&space;\small&space;g_R(D,A)" title="\small g_R(D,A)" /></a>定义为其信息增益<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;g(D,A)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;g(D,A)" title="\small g(D,A)" /></a>与训练数据集D关于特征A的值的熵<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;H_A(D)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;H_A(D)" title="\small H_A(D)" /></a>之比，即
 
 <center><a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;$$g_R(D,A)&space;=&space;\cfrac{g(D,A)}{H_A(D)}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;$$g_R(D,A)&space;=&space;\cfrac{g(D,A)}{H_A(D)}$$" title="\large $$g_R(D,A) = \cfrac{g(D,A)}{H_A(D)}$$" /></a></center> 
 
