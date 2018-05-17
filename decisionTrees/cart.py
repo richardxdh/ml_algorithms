@@ -37,7 +37,7 @@ def plotDTree(dTree, treeName):
             dot_data.write("%d [label=\"%s\" shape=box]" % (nodeIdx, nodeLabel))
         else:
             opName = "<=" if node['comparator'] == np.less_equal else "=="
-            nodeLabel = "X[%d]%s%s\ngini: %.3f" % (node['splitFeature'], 
+            nodeLabel = "X[%d]%s%.2f\ngini: %.3f" % (node['splitFeature'], 
                     opName, node['splitValue'], node['gini'],)
             dot_data.write("%d [label=\"%s\" shape=box]" % (nodeIdx, nodeLabel))
 
@@ -50,7 +50,7 @@ def plotDTree(dTree, treeName):
                 dot_data.write("%d -- %d\n" % (nodeIdx, latestIdx))
     dot_data.write("}")
 
-    filename = "./trees/%s.png" % treeName 
+    filename = "./trees/%s" % treeName 
     graph = graphviz.Source(dot_data.getvalue(), filename=filename, format="png")
     graph.view()
 
@@ -129,7 +129,18 @@ def clfSplitPoint(df, dl, ft):
 
     if ft[splitFeature] == CONTINUOUS:
         # optimize split point
-        pass
+        valList = np.sort(list(set(df[:, splitFeature])))
+        valIdx = np.where(valList == splitValue)[0][0]
+        # case 1
+#        midVal = (np.min(valList) + np.max(valList)) / 2
+#        if splitValue < midVal:
+#            splitValue = (splitValue + valList[valIdx + 1]) / 2
+#        else:
+#            splitValue = (splitValue + valList[valIdx - 1]) / 2
+
+        # case 2
+        if valIdx < len(valList):
+            splitValue = (splitValue + valList[valIdx + 1]) / 2
 
     return splitFeature, splitValue, minGini, comparator, splitLeftIdxList, splitRightIdxList
 
@@ -405,7 +416,11 @@ def testCart():
     '''
     测试决策树
     '''
-#    dataSet, featNames = loadCarData()
+#   data, featNames = loadCarData()
+#   featTypes = [DISCRETE] * 6
+#   dataSet = data[:, :-1]
+#   labels = data[:, -1]
+
     iris = load_iris()
     featTypes = [CONTINUOUS, CONTINUOUS, CONTINUOUS, CONTINUOUS]
     dataSet = iris.data
@@ -425,7 +440,7 @@ def testCart():
     # pruning
     treeList = genSubTreeList(orgTree)
 
-    # choose the best one with cross validation
+    # choose the best one validating on testDataSet
     minErrTreeIndex = -1
     minErrRate = np.inf
     for index in range(len(treeList)):
@@ -458,7 +473,7 @@ def useSkDT(trainDataSet, trainLabels, testDataSet, testLabels):
 
     dot_data = StringIO()
     SKTREE.export_graphviz(skClf, out_file=dot_data) 
-    graph = graphviz.Source(dot_data.getvalue(), filename="./trees/skDTree.png", format="png")
+    graph = graphviz.Source(dot_data.getvalue(), filename="./trees/skDTree", format="png")
     graph.view()
 
     predicts = skClf.predict(testDataSet)
