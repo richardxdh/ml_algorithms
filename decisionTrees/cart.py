@@ -16,6 +16,13 @@ CONTINUOUS = "continuous"
 COMPARATOR = {DISCRETE: np.equal, CONTINUOUS: np.less_equal}
 
 
+# TODO
+# 2.) implement regression;
+# 3.) compare regression with sklearn;
+# 4.) go over MLiA;
+# 5.) compare ID3/C4.5 with sklearn;
+
+
 def plotDTree(dTree, treeName):
     '''
     Visualize decision tree
@@ -174,35 +181,45 @@ def clfCreateNode(df, dl, ft):
         'giniError' : float decrease of impurity after splitting, used for pruning
         }
     '''
-    node = {'type': LEAF}
-    node['gini'] = giniImpurity(dl)
-    # set the most label as current node label
-    labels = list(set(dl))
-    countList = [np.count_nonzero(dl == label) for label in labels]
-    node['fcVal'] = labels[np.argmax(countList)]
+    root = {'df': df, 'dl': dl}
+    nodeStack = [root]
+    while len(nodeStack) > 0:
+        node = nodeStack[-1]
+        del nodeStack[-1]
+        df = node['df']
+        dl = node['dl']
 
-    # check end condition (implement prepruning here)
-    if len(labels) == 1:
-        return node
+        node['type'] = LEAF
+        node['gini'] = giniImpurity(dl)
+        # set the most label as current node label
+        labels = list(set(dl))
+        countList = [np.count_nonzero(dl == label) for label in labels]
+        node['fcVal'] = labels[np.argmax(countList)]
 
-    # create subnodes
-    node['type'] = NODE
-    splitFeature, splitValue, splitGini, comparator, leftIdxList, \
-            rightIdxList = clfSplitPoint(df, dl, ft)
-    node['splitFeature'] = splitFeature
-    node['splitValue'] = splitValue
-    node['comparator'] = comparator
-    node['giniError'] = node['gini'] * dl.shape[0] - splitGini
+        # check end condition (implement prepruning here)
+        if len(labels) == 1:
+            continue
 
-    # create left subnode
-    if leftIdxList.size > 0:
-        node['left'] = clfCreateNode(df[leftIdxList], dl[leftIdxList], ft)
+        # create subnodes
+        node['type'] = NODE
+        splitFeature, splitValue, splitGini, comparator, leftIdxList, \
+                rightIdxList = clfSplitPoint(df, dl, ft)
+        node['splitFeature'] = splitFeature
+        node['splitValue'] = splitValue
+        node['comparator'] = comparator
+        node['giniError'] = node['gini'] * dl.shape[0] - splitGini
 
-    # create right subnode
-    if rightIdxList.size > 0:
-        node['right'] = clfCreateNode(df[rightIdxList], dl[rightIdxList], ft)
+        # create left subnode
+        if leftIdxList.size > 0:
+            node['left'] = {'df': df[leftIdxList], 'dl': dl[leftIdxList]}
+            nodeStack.append(node['left'])
 
-    return node
+        # create right subnode
+        if rightIdxList.size > 0:
+            node['right'] = {'df': df[rightIdxList], 'dl': dl[rightIdxList]}
+            nodeStack.append(node['right'])
+
+    return root
 
 
 def findLeafParents(node, parentNodes):
@@ -409,22 +426,22 @@ def loadCarData():
         for line in df:
             fields = line.strip().split(',')
             dataset.append(fields)
-    return np.array(dataset), featNames
+    return np.array(dataset, dtype=float), featNames
 
 
 def testCart():
     '''
     测试决策树
     '''
-#   data, featNames = loadCarData()
-#   featTypes = [DISCRETE] * 6
-#   dataSet = data[:, :-1]
-#   labels = data[:, -1]
+    data, featNames = loadCarData()
+    featTypes = [CONTINUOUS] * 6
+    dataSet = data[:, :-1]
+    labels = data[:, -1]
 
-    iris = load_iris()
-    featTypes = [CONTINUOUS, CONTINUOUS, CONTINUOUS, CONTINUOUS]
-    dataSet = iris.data
-    labels = iris.target
+#    iris = load_iris()
+#    featTypes = [CONTINUOUS, CONTINUOUS, CONTINUOUS, CONTINUOUS]
+#    dataSet = iris.data
+#    labels = iris.target
 
     dataIdxList = list(range(dataSet.shape[0]))
     np.random.shuffle(dataIdxList)
