@@ -222,22 +222,27 @@ def clfCreateNode(df, dl, ft):
     return root
 
 
-def findLeafParents(node, parentNodes):
+def findLeafParents(root, parentNodes):
     '''
     查找carTree上所有叶子结点的父节点
     '''
-    left = node['left']
-    right = node['right']
+    nodeStack = [root]
+    while len(nodeStack) > 0:
+        node = nodeStack[-1]
+        del nodeStack[-1]
 
-    if left['type'] == LEAF and right['type'] == LEAF:
-        parentNodes.append(node)
-        return
+        left = node['left']
+        right = node['right']
 
-    if left['type'] == NODE:
-        findLeafParents(node.get('left'), parentNodes)
+        if left['type'] == LEAF and right['type'] == LEAF:
+            parentNodes.append(node)
+            continue
 
-    if right['type'] == NODE:
-        findLeafParents(node.get('right'), parentNodes)
+        if left['type'] == NODE:
+            nodeStack.append(left)
+
+        if right['type'] == NODE:
+            nodeStack.append(right)
 
 
 def pruneOneBranch(carTree):
@@ -273,7 +278,7 @@ def genSubTreeList(carTree, saveTree=False):
         subTree = copy.deepcopy(subTree)
         pruneOneBranch(subTree)
         treeList.append(subTree)
- 
+
     if saveTree:
         for i in range(len(treeList)):
             plotDTree(treeList[i], "tree%d" % i)
@@ -281,110 +286,12 @@ def genSubTreeList(carTree, saveTree=False):
     return treeList
 
 
-def regSplitPoint(df, dl, fs):
-    '''
-    Choose the best split point for regression with the least square error as metric.
-
-    Parameters
-    ----------
-    df : array
-        data feature matrix
-    dl : array
-        data label vector
-    fs : list
-        feature space vector
-
-    Returns
-    ----------
-    splitFeature : int
-        Index of feature which is the best one to be splitted.
-    splitValue : float
-        It is the best split point on feature splitFeature.
-    '''
-    squareError = np.inf
-    splitFeature = -1
-    splitValue = -1
-    for feat in fs:
-        for val in set(df[:, feat]):
-            curSqureError = 0.
-            # greater than branch
-            idxList = np.where(df[:, feat] > val)
-            if idxList.size > 0:
-                curSqureError += np.var(dl[idxList]) * idxList.size
-            # less than or equal branch
-            idxList = np.where(df[:, feat] <= val)
-            if idxList.size > 0:
-                curSqureError += np.var(dl[idxList]) * idxList.size
-
-            if curSqureError < squareError:
-                squareError = curSqureError
-                splitFeature = feat
-                splitValue = val
-    return splitFeature, splitValue
-
-
-def regCreateNode(df, dl, fs):
-    '''
-    Create tree node for regression.
-
-    Parameters
-    ----------
-    df : array
-        data feature matrix
-    dl : array
-        data label vector
-    fs : list
-        feature space vector
-
-    Returns
-    ----------
-    node : dict
-        A dictionary represents tree node or leaf.
-        {
-        'type': string node / leaf
-        'fcVal' : int forecasted class
-        'splitFeature' : int splitting feature
-        'splitValue' : float splitting value
-        'left' : node contains data which splitFeature is greater than splitValue
-        'right': node contains data which splitFeature is less than or equal to splitValue
-        }
-
-    '''
-    node = {'type': LEAF}
-    # set label mean as current forecasted value
-    node['fcVal'] = np.mean(dl)
-
-    # check end condition
-    if fs.size == 0 or np.var(dl) == 0.:
-        return node
-
-    node['type'] = NODE
-    # choose the best splitting point
-    splitFeature, splitValue = regSplitPoint(df, dl, fs)
-    node['splitFeature'] = splitFeature
-    node['splitValue'] = splitValue
-
-    # create left subnode
-    idxList = np.where(df[:, splitFeature] > splitValue)[0]
-    if idxList.size > 0:
-        node['left'] = regCreateNode(df[idxList], dl[idxList],
-                fs[:].remove(splitFeature))
-
-    # create right subnode
-    idxList = np.where(df[:, splitFeature] <= splitValue)[0]
-    if idxList.size > 0:
-        node['right'] = regCreateNode(df[idxList], dl[idxList],
-                fs[:].remove(splitFeature))
-
-    return node
-
-
 def createTree(dataFeats, dataLabels, featTypes, ctType=CLF):
     '''
     Create decision tree for different scenario, classifier or regression.
     '''
     if ctType == REG:
-        createNode = regCreateNode
+        pass
     else:
         createNode = clfCreateNode
 
@@ -478,7 +385,6 @@ def testCart():
 
     # compare with the decision tree built with sklearn.tree
     useSkDT(trainDataSet, trainLabels, testDataSet, testLabels)
-
 
 
 def useSkDT(trainDataSet, trainLabels, testDataSet, testLabels):
